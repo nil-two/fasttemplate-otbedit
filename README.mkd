@@ -1,19 +1,12 @@
 fasttemplate-OTBEdit
 ====================
-
 fasttemplate-OTBEdit is a macro for [OTBEdit](http://www.hi-ho.ne.jp/a_ogawa/otbedit/).
 This macro provides a expansion template.
 
 It's based on [mattn/sonictemplate-vim](https://github.com/mattn/sonictemplate-vim).
 
-License
-====================
-
-MIT License
-
 Usage
 ====================
-
 1. Start OTBEdit.
 
 2. Press Ctrl+d.
@@ -21,6 +14,7 @@ Usage
 3. Dialog appears. type "main".
 
 4. Template will expand.
+
 ```c
 #include <stdio.h>
 
@@ -28,56 +22,63 @@ int main(int argc, char* argv[]) {
 	|
 }
 ```
-   (Cursor is in |)
+(Cursor is in |)
 
 Installation
 ====================
+1. download auto-close-otbedit.zip from the [releases page](https://github.com/kusabashira/auto-close-otbedit/releases)
 
-1. Put all in your OTBEdit directory.
-   (Ignore README.md and LICENSE)
-2. Write in otbedit.scm in scmlib directory.
+2. Unpack the zip file, and put all in your OTBEdit directory.
+
+3. Write in otbedit.scm in scmlib directory.
+
 ```scm
 (use fasttemplate)
 (app-set-key "Ctrl+d" fasttemplate-expand)
 ```
-   (Please create if otbedit.scm doesn't exist in scmlib directory)
+(Please create if otbedit.scm doesn't exist in scmlib directory)
 
 Template
 ====================
+If you want to new template,
+you can create it to writing template in template directory.
+Any file name is ok (But the extension should be .txt)
 
-  If you want to new template,
-  you can create it to writing template in template directory.
-  Any file name is ok (But the extension should be .txt)
-
-  Basically, it will expand just like you wrote.
+Basically, it will expand just like you wrote.
 
 Keyword
 ====================
-
-  This macro provide some keywords in template.
+This macro provide some keywords in template.
   
 -----
-    {{_name_}}
+	{{_name_}}
 
-  It will expand current filename.
-
------
-    {{_cursor_}}
-
-  The cursor moves here after expand the template.
+It will expand current filename.
 
 -----
-    {{_input_:var}}
+	{{_cursor_}}
 
-  When you expand a template,
-  it will ask for a value to expand in dialog.
-
------
-    {{_var_:var}}
-
-  It will expand same name value that you inputted in dialog.
+The cursor moves here after expand the template.
 
 -----
-    {{_expr_:expression}}
+	{{_input_:var}}
+
+When you expand a template,
+it will ask for a value to expand in dialog.
+
+-----
+	{{_var_:var}}
+It will expand same name value that you inputted in dialog.
+
+-----
+	{{_expr_:expression}}
   
-  It will expand evaluated S-expression you wrote.
+It will expand evaluated S-expression you wrote.
+
+License
+====================
+MIT License
+
+Author
+====================
+wara <kusabashira227@gmail.com>
