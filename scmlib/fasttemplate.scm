@@ -19,7 +19,7 @@
 
   (define (read-template)
     (let ((template-name (app-input-box "template name")))
-      (if template-name
+      (if (string? template-name)
         (let ((file-name (string-append (app-get-tool-dir)
                                         "template\\"
                                         template-name
@@ -38,92 +38,87 @@
 
     (define (collect-input-tag template)
       (define (self v) v)
-      (let ((unsafe-tag-ls '(#t)))
+      (let ((unsafe-tag-ls '()))
         (regexp-replace-all
           #/\{\{_input_:(\w+)\}\}/
           template
           (lambda (m)
-            (set-cdr!
-              unsafe-tag-ls
-              (append
-                (cdr unsafe-tag-ls)
-                (list (rxmatch-substring m 1))))
+            (set! unsafe-tag-ls (cons (rxmatch-substring m 1)
+                                      unsafe-tag-ls))
             (rxmatch-substring m)))
-        (let ((ret-ls (map self (cdr unsafe-tag-ls))))
-          (set-cdr! unsafe-tag-ls '())
-          ret-ls)))
+        (reverse unsafe-tag-ls)))
 
-    (define (input-value-with-dialog from-tag)
-      (let ((to-tag (app-input-box from-tag)))
-        (if to-tag
-          (cons from-tag to-tag)
-          (exit))))
+  (define (input-value-with-dialog from-tag)
+    (let ((to-tag (app-input-box from-tag)))
+      (if to-tag
+        (cons from-tag to-tag)
+        (exit))))
 
-    (define (substitute-tag template tag-ls)
-      (let loop ((tags (map input-value-with-dialog tag-ls))
-                 (substituted-template template))
-        (if (null? tags)
-          substituted-template
-          (loop (cdr tags)
-                (regexp-replace-all
-                  (string->regexp (string-append
-                                    "\\{\\{_var_:"
-                                    (caar tags)
-                                    "\\}\\}"))
-                  substituted-template
-                  (cdar tags))))))
-    (substitute-tag
-      (delete-_input_ template)
-      (collect-input-tag template)))
+  (define (substitute-tag template tag-ls)
+    (let loop ((tags (map input-value-with-dialog tag-ls))
+               (substituted-template template))
+      (if (null? tags)
+        substituted-template
+        (loop (cdr tags)
+              (regexp-replace-all
+                (string->regexp (string-append
+                                  "\\{\\{_var_:"
+                                  (caar tags)
+                                  "\\}\\}"))
+                substituted-template
+                (cdar tags))))))
+  (substitute-tag
+    (delete-_input_ template)
+    (collect-input-tag template)))
 
-  (define (expand-name template)
+(define (expand-name template)
+  (regexp-replace-all
+    #/\{\{_name_\}\}/
+    template
     (regexp-replace-all
-      #/\{\{_name_\}\}/
-      template
-      (regexp-replace-all
-        #/.*\\(.*)\..*/
-        (editor-get-filename)
-        "$1")))
+      #/.*\\(.*)\..*/
+      (editor-get-filename)
+      "$1")))
 
-  (define (expand-expr template)
-    (regexp-replace-all
-      #/\{\{_expr_:(.+)\}\}/
-      template
-      (lambda (m)
-        (eval (read (open-input-string (rxmatch-substring m 1)))))))
+(define (expand-expr template)
+  (regexp-replace-all
+    #/\{\{_expr_:(.+)\}\}/
+    template
+    (lambda (m)
+      (eval (read (open-input-string (rxmatch-substring m 1)))))))
 
-  (define (append-indent template)
-    (define (get-current-indent)
-      (let ((indent (rxmatch-substring
-                      (rxmatch
-                        #/^\t+/
-                        (editor-get-row-string (editor-get-cur-row))))))
-        (if indent
-          (string-length indent)
-          #f)))
-    (let ((indent (get-current-indent)))
+(define (append-indent template)
+  (define (get-current-indent)
+    (let ((indent (rxmatch-substring
+                    (rxmatch
+                      #/^\t+/
+                      (editor-get-row-string (editor-get-cur-row))))))
       (if indent
+        (string-length indent)
+        #f)))
+  (let ((indent (get-current-indent)))
+    (if indent
+      (regexp-replace-all
+        #/\A\t+/
         (regexp-replace-all
-          #/\A\t+/
-          (regexp-replace-all
-            #/^/
-            template
-            (make-string indent #\tab))
-          "")
-        template)))
+          #/^/
+          template
+          (make-string indent #\tab))
+        "")
+      template)))
 
-  (define (goto-_cursor_)
-    (editor-search-string "\\{\\{_cursor_\\}\\}")
-    (editor-delete-selected-string))
+(define (goto-_cursor_)
+  (editor-search-string "\\{\\{_cursor_\\}\\}")
+  (editor-delete-selected-string))
 
-  (let ((template (read-template)))
-    (if template
-      (begin
-        (editor-paste-string
-          (apply-chain
-            template
-            expand-var
-            expand-name
-            expand-expr
-            append-indent))
-        (goto-_cursor_)))))
+(let ((template (read-template)))
+  (if template
+    (begin
+      (editor-paste-string
+        (apply-chain
+          template
+          expand-var
+          expand-name
+          expand-expr
+          append-indent))
+      (goto-_cursor_)))))
