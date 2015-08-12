@@ -88,7 +88,7 @@
       template
       (lambda (m)
         (eval (read (open-input-string (rxmatch-substring m 1)))))))
-  
+
   (define (append-indent template)
     (define (get-current-indent)
       (let ((indent (rxmatch-substring
@@ -108,11 +108,11 @@
             (make-string indent #\tab))
           "")
         template)))
-  
+
   (define (goto-_cursor_)
     (editor-search-string "\\{\\{_cursor_\\}\\}")
     (editor-delete-selected-string))
-  
+
   (let ((template (read-template)))
     (if template
       (begin
