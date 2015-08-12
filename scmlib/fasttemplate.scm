@@ -1,4 +1,4 @@
-(define (fasttemplate-expand)
+(define (load-wara-fasttemplate)
   (define (apply-chain ori-target . procs)
     (let loop ((target ori-target)
                (proc procs))
@@ -113,14 +113,24 @@
     (editor-search-string "\\{\\{_cursor_\\}\\}")
     (editor-delete-selected-string))
 
-  (let ((template (read-template)))
-    (if template
-      (begin
-        (editor-paste-string
-          (apply-chain
-            template
-            expand-var
-            expand-name
-            expand-expr
-            append-indent))
-        (goto-_cursor_)))))
+  (define (fasttemplate-expand)
+    (let ((template (read-template)))
+      (if template
+        (begin
+          (editor-paste-string
+            (apply-chain
+              template
+              expand-var
+              expand-name
+              expand-expr
+              append-indent))
+          (goto-_cursor_)))))
+
+  (define fasttemplate-key
+    (if (symbol-bound? 'fasttemplate-key)
+      fasttemplate-key
+       "Ctrl+d"))
+
+  (app-set-key fasttemplate-key fasttemplate-expand))
+
+(load-wara-fasttemplate)
