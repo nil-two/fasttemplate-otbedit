@@ -34,9 +34,17 @@ Installation
 
 ```scm
 (use fasttemplate)
-(app-set-key "Ctrl+d" fasttemplate-expand)
 ```
 (Please create if otbedit.scm doesn't exist in scmlib directory)
+
+Customize
+====================
+###Change fasttemplate key
+Write in `otbedit.scm` in `scmlib directory`.
+```scm
+(define fasttemplate-key <key>)
+```
+(`<key>` is the key you desire, like "F4", "Alt+d")
 
 Template
 ====================
