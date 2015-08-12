@@ -1,11 +1,11 @@
 (define (load-wara-fasttemplate)
-  (define (apply-chain ori-target . procs)
+  (define (apply-chain ori-target . proc-ls)
     (let loop ((target ori-target)
-               (proc procs))
-      (if (null? proc)
+               (proc-ls proc-ls))
+      (if (null? proc-ls)
         target
-        (loop ((car proc) target)
-              (cdr proc)))))
+        (loop ((car proc-ls) target)
+              (cdr proc-ls)))))
 
   (define (read-all file-name)
     (call-with-input-file
