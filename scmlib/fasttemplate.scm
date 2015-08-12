@@ -76,11 +76,12 @@
     (regexp-replace-all
       #/\{\{_name_\}\}/
       template
-      (regexp-replace-all
-        #/.*\\(.*)\..*/
-        (editor-get-filename)
-        "$1")))
-  
+      (lambda (m)
+        (regexp-replace-all
+          #/.*\\([^.]*)(\..*)?$/
+          (editor-get-filename)
+          "$1"))))
+
   (define (expand-expr template)
     (regexp-replace-all
       #/\{\{_expr_:(.+)\}\}/
