@@ -17,13 +17,13 @@
             (list->string (reverse char-ls))
             (loop (cons c char-ls) (read-char in)))))))
 
+  (define (template-path name)
+    (string-append (app-get-tool-dir) "template\\" name ".txt"))
+
   (define (read-template)
     (let ((template-name (app-input-box "template name")))
       (if (string? template-name)
-        (let ((file-name (string-append (app-get-tool-dir)
-                                        "template\\"
-                                        template-name
-                                        ".txt")))
+        (let ((file-name (template-path template-name)))
           (if (file-exists? file-name)
             (read-all file-name)
             (exit)))
