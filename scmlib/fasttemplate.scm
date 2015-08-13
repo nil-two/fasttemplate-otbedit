@@ -33,8 +33,8 @@
     (let* ((name (app-input-box "template name"))
            (path (template-path name)))
       (if (not (file-exists? path))
-	(exit)
-	(read-all path))))
+        (exit)
+        (read-all path))))
 
   (define (expand-var template)
     (let ((var-table (make-hash-table 'string=?)))
@@ -67,9 +67,9 @@
   (define (append-indent template)
     (let ((indent (match-string #/^\s*/ (get-cur-line))))
       (regexp-replace-all
-	#/(?!\A)^/
-	template
-	indent)))
+        #/(?!\A)^/
+        template
+        indent)))
 
   (define (move-to-end-of-line)
     (editor-set-row-col
