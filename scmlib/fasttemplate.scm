@@ -65,7 +65,7 @@
         (eval (read (open-input-string (rxmatch-substring m 1)))))))
 
   (define (append-indent template)
-    (let ((indent (match-string #/^\t*/ (get-cur-line))))
+    (let ((indent (match-string #/^\s*/ (get-cur-line))))
       (regexp-replace-all
 	#/(?!\A)^/
 	template
