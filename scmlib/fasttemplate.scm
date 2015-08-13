@@ -83,7 +83,7 @@
       (editor-get-cur-row)
       (string-length (editor-get-row-string (editor-get-cur-row)))))
 
-  (define (goto-_cursor_)
+  (define (move-to-_cursor_)
     (editor-search-string "\\{\\{_cursor_\\}\\}")
     (editor-delete-selected-string))
 
@@ -99,7 +99,7 @@
               expand-name
               expand-expr
               append-indent))
-          (goto-_cursor_)))))
+          (move-to-_cursor_)))))
 
   (define fasttemplate-key
     (if (symbol-bound? 'fasttemplate-key)
