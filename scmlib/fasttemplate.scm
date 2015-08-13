@@ -7,6 +7,9 @@
         (loop ((car proc-ls) target)
               (cdr proc-ls)))))
 
+  (define (get-basename path)
+    (regexp-replace-all #/.*\\([^.]*)(\..*)?$/ path "$1"))
+
   (define (read-all name)
     (call-with-input-file
       name
@@ -46,10 +49,7 @@
       #/\{\{_name_\}\}/
       template
       (lambda (m)
-        (regexp-replace-all
-          #/.*\\([^.]*)(\..*)?$/
-          (editor-get-filename)
-          "$1"))))
+        (get-basename (editor-get-filename)))))
 
   (define (expand-expr template)
     (regexp-replace-all
