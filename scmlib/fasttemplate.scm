@@ -32,9 +32,9 @@
   (define (read-template)
     (let* ((name (app-input-box "template name"))
            (path (template-path name)))
-      (if (file-exists? path)
-        (read-all path)
-        #f)))
+      (if (not (file-exists? path))
+	(exit)
+	(read-all path))))
 
   (define (expand-var template)
     (let ((var-table (make-hash-table 'string=?)))
@@ -82,17 +82,15 @@
 
   (define (fasttemplate-expand)
     (let ((template (read-template)))
-      (if template
-        (begin
-          (move-to-end-of-line)
-          (editor-paste-string
-            (apply-chain
-              template
-              expand-var
-              expand-name
-              expand-expr
-              append-indent))
-          (move-to-_cursor_)))))
+      (move-to-end-of-line)
+      (editor-paste-string
+        (apply-chain
+          template
+          expand-var
+          expand-name
+          expand-expr
+          append-indent))
+      (move-to-_cursor_)))
 
   (define fasttemplate-key
     (if (symbol-bound? 'fasttemplate-key)
