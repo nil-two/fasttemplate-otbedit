@@ -43,16 +43,34 @@
         (exit))
       (read-all path)))
 
+  (define (tag->keyword tag)
+    (string->regexp 
+      (string-append "\\{\\{_(?:var|input)_:" tag "\\}\\}")))
+
   (define (expand-var template)
-    (let ((var-table (make-hash-table 'string=?)))
+    (let ((tag-table (make-hash-table 'string=?))
+          (tag-ls '()))
       (regexp-replace-all
         #/\{\{_(?:var|input)_:(\w+)\}\}/
         template
         (lambda (m)
           (let ((tag (rxmatch-substring m 1)))
-            (if (not (hash-table-exists? var-table tag))
-              (hash-table-put! var-table tag (input-with-dialog tag)))
-            (hash-table-get var-table tag ""))))))
+            (if (not (hash-table-exists? tag-table tag))
+              (set! tag-ls (cons tag tag-ls)))
+            (hash-table-put! tag-table tag #t))
+          (rxmatch-substring m)))
+      (let loop ((tag-ls (reverse tag-ls))
+                 (template template))
+        (if (null? tag-ls)
+          template
+          (loop (cdr tag-ls)
+                (let* ((tag (car tag-ls))
+                       (var (input-with-dialog tag)))
+                  (regexp-replace-all
+                    (tag->keyword tag)
+                    template
+                    (lambda (m)
+                      var))))))))
 
   (define (expand-name template)
     (regexp-replace-all
