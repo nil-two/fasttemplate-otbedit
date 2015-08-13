@@ -7,6 +7,12 @@
         (loop ((car proc-ls) target)
               (cdr proc-ls)))))
 
+  (define (input-with-dialog title)
+    (let ((var (app-input-box title)))
+      (if (eq? var #f)
+        (exit))
+      var))
+
   (define (match-string re str)
     (rxmatch-substring (rxmatch re str)))
 
@@ -31,7 +37,7 @@
     (string-append (app-get-tool-dir) "template\\" name ".txt"))
 
   (define (read-template)
-    (let* ((name (app-input-box "template name"))
+    (let* ((name (input-with-dialog "template name"))
            (path (template-path name)))
       (if (not (file-exists? path))
         (exit))
@@ -45,10 +51,7 @@
         (lambda (m)
           (let ((tag (rxmatch-substring m 1)))
             (if (not (hash-table-exists? var-table tag))
-              (let ((var (app-input-box tag)))
-                (if (eq? var #f)
-                  (exit))
-                (hash-table-put! var-table tag var)))
+              (hash-table-put! var-table tag (input-with-dialog tag)))
             (hash-table-get var-table tag ""))))))
 
   (define (expand-name template)
