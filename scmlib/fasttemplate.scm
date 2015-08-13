@@ -65,21 +65,11 @@
         (eval (read (open-input-string (rxmatch-substring m 1)))))))
 
   (define (append-indent template)
-    (define (get-current-indent)
-      (let ((indent (match-string #/^\t+/ (get-cur-line))))
-        (if indent
-          (string-length indent)
-          #f)))
-    (let ((indent (get-current-indent)))
-      (if indent
-        (regexp-replace-all
-          #/\A\t+/
-          (regexp-replace-all
-            #/^/
-            template
-            (make-string indent #\tab))
-          "")
-        template)))
+    (let ((indent (match-string #/^\t*/ (get-cur-line))))
+      (regexp-replace-all
+	#/(?!\A)^/
+	template
+	indent)))
 
   (define (move-to-end-of-line)
     (editor-set-row-col
