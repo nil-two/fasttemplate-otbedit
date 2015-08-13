@@ -7,15 +7,15 @@
         (loop ((car proc-ls) target)
               (cdr proc-ls)))))
 
-  (define (read-all file-name)
+  (define (read-all name)
     (call-with-input-file
-      file-name
+      name
       (lambda (in)
         (let loop ((char-ls '())
-                   (c (read-char in)))
-          (if (eof-object? c)
+                   (char (read-char in)))
+          (if (eof-object? char)
             (list->string (reverse char-ls))
-            (loop (cons c char-ls) (read-char in)))))))
+            (loop (cons char char-ls) (read-char in)))))))
 
   (define (template-path name)
     (string-append (app-get-tool-dir) "template\\" name ".txt"))
