@@ -25,10 +25,10 @@
 
   (define (read-template)
     (let* ((name (app-input-box "template name"))
-	   (path (template-path name)))
+           (path (template-path name)))
       (if (file-exists? path)
-	(read-all path)
-	#f)))
+        (read-all path)
+        #f)))
 
   (define (expand-var template)
     (let ((var-table (make-hash-table 'string=?)))
@@ -91,7 +91,7 @@
     (let ((template (read-template)))
       (if template
         (begin
-	  (move-to-end-of-line)
+          (move-to-end-of-line)
           (editor-paste-string
             (apply-chain
               template
