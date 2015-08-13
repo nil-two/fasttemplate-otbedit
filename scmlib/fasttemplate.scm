@@ -51,7 +51,7 @@
     (let ((tag-table (make-hash-table 'string=?))
           (tag-ls '()))
       (regexp-replace-all
-        #/\{\{_(?:var|input)_:(\w+)\}\}/
+        #/\{\{_(?:var|input)_:([^}]+)\}\}/
         template
         (lambda (m)
           (let ((tag (rxmatch-substring m 1)))
