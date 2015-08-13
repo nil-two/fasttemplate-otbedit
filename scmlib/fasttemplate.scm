@@ -24,7 +24,8 @@
                    (char (read-char in)))
           (if (eof-object? char)
             (list->string (reverse char-ls))
-            (loop (cons char char-ls) (read-char in)))))))
+            (loop (cons char char-ls)
+                  (read-char in)))))))
 
   (define (template-path name)
     (string-append (app-get-tool-dir) "template\\" name ".txt"))
@@ -33,8 +34,8 @@
     (let* ((name (app-input-box "template name"))
            (path (template-path name)))
       (if (not (file-exists? path))
-        (exit)
-        (read-all path))))
+        (exit))
+      (read-all path)))
 
   (define (expand-var template)
     (let ((var-table (make-hash-table 'string=?)))
@@ -45,9 +46,9 @@
           (let ((tag (rxmatch-substring m 1)))
             (if (not (hash-table-exists? var-table tag))
               (let ((var (app-input-box tag)))
-                (if (not (string? var))
-                  (exit)
-                  (hash-table-put! var-table tag var))))
+                (if (eq? var #f)
+                  (exit))
+                (hash-table-put! var-table tag var)))
             (hash-table-get var-table tag ""))))))
 
   (define (expand-name template)
@@ -69,7 +70,8 @@
       (regexp-replace-all
         #/(?!\A)^/
         template
-        indent)))
+        (lambda (m)
+          indent))))
 
   (define (move-to-end-of-line)
     (editor-set-row-col
@@ -95,7 +97,7 @@
   (define fasttemplate-key
     (if (symbol-bound? 'fasttemplate-key)
       fasttemplate-key
-       "Ctrl+d"))
+      "Ctrl+d"))
 
   (app-set-key fasttemplate-key fasttemplate-expand))
 
