@@ -10,15 +10,15 @@
   (define (match-string re str)
     (rxmatch-substring (rxmatch re str)))
 
-  (define (get-cur-line)
+  (define (cur-line)
     (editor-get-row-string (editor-get-cur-row)))
 
-  (define (get-basename path)
+  (define (basename path)
     (regexp-replace-all #/.*\\([^.]*)(\..*)?$/ path "$1"))
 
-  (define (read-all name)
+  (define (read-all filename)
     (call-with-input-file
-      name
+      filename
       (lambda (in)
         (let loop ((char-ls '())
                    (char (read-char in)))
@@ -55,7 +55,7 @@
       #/\{\{_name_\}\}/
       template
       (lambda (m)
-        (get-basename (editor-get-filename)))))
+        (basename (editor-get-filename)))))
 
   (define (expand-expr template)
     (regexp-replace-all
@@ -65,7 +65,7 @@
         (eval (read (open-input-string (rxmatch-substring m 1)))))))
 
   (define (append-indent template)
-    (let ((indent (match-string #/^\s*/ (get-cur-line))))
+    (let ((indent (match-string #/^\s*/ (cur-line))))
       (regexp-replace-all
         #/(?!\A)^/
         template
@@ -74,7 +74,7 @@
   (define (move-to-end-of-line)
     (editor-set-row-col
       (editor-get-cur-row)
-      (string-length (get-cur-line))))
+      (string-length (cur-line))))
 
   (define (move-to-_cursor_)
     (editor-search-string "\\{\\{_cursor_\\}\\}")
