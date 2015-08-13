@@ -7,6 +7,9 @@
         (loop ((car proc-ls) target)
               (cdr proc-ls)))))
 
+  (define (match-string re str)
+    (rxmatch-substring (rxmatch re str)))
+
   (define (get-cur-line)
     (editor-get-row-string (editor-get-cur-row)))
 
@@ -63,10 +66,7 @@
 
   (define (append-indent template)
     (define (get-current-indent)
-      (let ((indent (rxmatch-substring
-                      (rxmatch
-                        #/^\t+/
-                        (get-cur-line)))))
+      (let ((indent (match-string #/^\t+/ (get-cur-line))))
         (if indent
           (string-length indent)
           #f)))
