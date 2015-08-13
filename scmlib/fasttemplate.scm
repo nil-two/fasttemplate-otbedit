@@ -28,12 +28,6 @@
 	#f)))
 
   (define (expand-var template)
-    (define (delete-_input_ template)
-      (regexp-replace-all
-        #/\{\{_input_:(\w+)\}\}/
-        template
-        "{{_var_:$1}}"))
-
     (define (collect-input-tag template)
       (define (self v) v)
       (let ((unsafe-tag-ls '()))
@@ -60,14 +54,14 @@
           (loop (cdr tags)
                 (regexp-replace-all
                   (string->regexp (string-append
-                                    "\\{\\{_var_:"
+                                    "\\{\\{_(var|input)_:"
                                     (caar tags)
                                     "\\}\\}"))
                   substituted-template
                   (cdar tags))))))
 
     (substitute-tag
-      (delete-_input_ template)
+      template
       (collect-input-tag template)))
 
   (define (expand-name template)
