@@ -21,13 +21,11 @@
     (string-append (app-get-tool-dir) "template\\" name ".txt"))
 
   (define (read-template)
-    (let ((template-name (app-input-box "template name")))
-      (if (string? template-name)
-        (let ((file-name (template-path template-name)))
-          (if (file-exists? file-name)
-            (read-all file-name)
-            (exit)))
-        (exit))))
+    (let* ((name (app-input-box "template name"))
+	   (path (template-path name)))
+      (if (file-exists? path)
+	(read-all path)
+	#f)))
 
   (define (expand-var template)
     (define (delete-_input_ template)
