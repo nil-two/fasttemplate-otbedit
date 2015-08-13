@@ -78,6 +78,11 @@
           "")
         template)))
 
+  (define (move-to-end-of-line)
+    (editor-set-row-col
+      (editor-get-cur-row)
+      (string-length (editor-get-row-string (editor-get-cur-row)))))
+
   (define (goto-_cursor_)
     (editor-search-string "\\{\\{_cursor_\\}\\}")
     (editor-delete-selected-string))
@@ -86,6 +91,7 @@
     (let ((template (read-template)))
       (if template
         (begin
+	  (move-to-end-of-line)
           (editor-paste-string
             (apply-chain
               template
