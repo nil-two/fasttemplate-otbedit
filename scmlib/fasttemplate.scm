@@ -7,6 +7,9 @@
         (loop ((car proc-ls) target)
               (cdr proc-ls)))))
 
+  (define (get-cur-line)
+    (editor-get-row-string (editor-get-cur-row)))
+
   (define (get-basename path)
     (regexp-replace-all #/.*\\([^.]*)(\..*)?$/ path "$1"))
 
@@ -63,7 +66,7 @@
       (let ((indent (rxmatch-substring
                       (rxmatch
                         #/^\t+/
-                        (editor-get-row-string (editor-get-cur-row))))))
+                        (get-cur-line)))))
         (if indent
           (string-length indent)
           #f)))
@@ -81,7 +84,7 @@
   (define (move-to-end-of-line)
     (editor-set-row-col
       (editor-get-cur-row)
-      (string-length (editor-get-row-string (editor-get-cur-row)))))
+      (string-length (get-cur-line))))
 
   (define (move-to-_cursor_)
     (editor-search-string "\\{\\{_cursor_\\}\\}")
