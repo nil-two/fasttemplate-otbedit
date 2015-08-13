@@ -30,7 +30,7 @@
   (define (expand-var template)
     (let ((var-table (make-hash-table 'string=?)))
       (regexp-replace-all
-        #/\{\{_input_:(\w+)\}\}/
+        #/\{\{_(?:var|input)_:(\w+)\}\}/
         template
         (lambda (m)
           (let ((tag (rxmatch-substring m 1)))
