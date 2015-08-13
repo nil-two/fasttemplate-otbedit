@@ -29,16 +29,14 @@
 
   (define (expand-var template)
     (define (collect-input-tag template)
-      (define (self v) v)
-      (let ((unsafe-tag-ls '()))
+      (let ((tag-ls '()))
         (regexp-replace-all
           #/\{\{_input_:(\w+)\}\}/
           template
           (lambda (m)
-            (set! unsafe-tag-ls (cons (rxmatch-substring m 1)
-                                      unsafe-tag-ls))
+            (set! tag-ls (cons (rxmatch-substring m 1) tag-ls))
             (rxmatch-substring m)))
-        (reverse unsafe-tag-ls)))
+        (reverse tag-ls)))
 
     (define (input-value-with-dialog from-tag)
       (let ((to-tag (app-input-box from-tag)))
