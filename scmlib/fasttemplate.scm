@@ -28,39 +28,18 @@
 	#f)))
 
   (define (expand-var template)
-    (define (collect-input-tag template)
-      (let ((tag-ls '()))
-        (regexp-replace-all
-          #/\{\{_input_:(\w+)\}\}/
-          template
-          (lambda (m)
-            (set! tag-ls (cons (rxmatch-substring m 1) tag-ls))
-            (rxmatch-substring m)))
-        (reverse tag-ls)))
-
-    (define (input-value-with-dialog from-tag)
-      (let ((to-tag (app-input-box from-tag)))
-        (if to-tag
-          (cons from-tag to-tag)
-          (exit))))
-
-    (define (substitute-tag template tag-ls)
-      (let loop ((tags (map input-value-with-dialog tag-ls))
-                 (substituted-template template))
-        (if (null? tags)
-          substituted-template
-          (loop (cdr tags)
-                (regexp-replace-all
-                  (string->regexp (string-append
-                                    "\\{\\{_(var|input)_:"
-                                    (caar tags)
-                                    "\\}\\}"))
-                  substituted-template
-                  (cdar tags))))))
-
-    (substitute-tag
-      template
-      (collect-input-tag template)))
+    (let ((var-table (make-hash-table 'string=?)))
+      (regexp-replace-all
+        #/\{\{_input_:(\w+)\}\}/
+        template
+        (lambda (m)
+          (let ((tag (rxmatch-substring m 1)))
+            (if (not (hash-table-exists? var-table tag))
+              (let ((var (app-input-box tag)))
+                (if (not (string? var))
+                  (exit)
+                  (hash-table-put! var-table tag var))))
+            (hash-table-get var-table tag ""))))))
 
   (define (expand-name template)
     (regexp-replace-all
