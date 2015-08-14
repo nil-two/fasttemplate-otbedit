@@ -123,6 +123,8 @@
       fasttemplate-key
       "Ctrl+d"))
 
-  (app-set-key fasttemplate-key fasttemplate-expand))
+  (app-set-key
+    fasttemplate-key
+    fasttemplate-expand))
 
 (load-wara-fasttemplate)
