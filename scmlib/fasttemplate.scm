@@ -1,4 +1,4 @@
-(define (load-kusabashira-fasttemplate)
+(define (load-nil2-fasttemplate)
   (define (apply-chain ori-target . proc-ls)
     (let loop ((target ori-target)
                (proc-ls proc-ls))
@@ -127,4 +127,4 @@
     fasttemplate-key
     fasttemplate-expand))
 
-(load-kusabashira-fasttemplate)
+(load-nil2-fasttemplate)
