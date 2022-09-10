@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
 Installation
 ------------
 
-1. download `fasttemplate-otbedit.zip` from the [releases page](https://github.com/nil2nekoni/fasttemplate-otbedit/releases)
+1. download `fasttemplate-otbedit.zip` from the [releases page](https://github.com/nil-two/fasttemplate-otbedit/releases)
 
 2. Unpack the zip file, and put all in your OTBEdit directory.
 
